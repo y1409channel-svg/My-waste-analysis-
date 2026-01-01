@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cheese Waste Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            background: #1e88e5;
+            color: white;
+            padding: 15px;
+            margin: -20px -20px 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        button {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        pre {
+            background: #eef1f4;
+            padding: 15px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🧀 Cheese Waste Management System</h1>
+
+<div class="card">
+    <h3>Cutting Department Input</h3>
+    <input id="total" type="number" placeholder="Total Waste (kg)">
+    <input id="usable" type="number" placeholder="Usable Waste (kg)">
+    <button onclick="submitWaste()">Submit</button>
+</div>
+
+<div class="card">
+    <h3>AI Waste Analysis</h3>
+    <pre id="analysis">No data yet</pre>
+    <button onclick="loadAnalysis()">Refresh</button>
+</div>
+
+<script>
+async function submitWaste() {
+    const total = document.getElementById("total").value;
+    const usable = document.getElementById("usable").value;
+
+    await fetch(`/api/waste?total_waste=${total}&usable_waste=${usable}`, {
+        method: "POST"
+    });
+
+    document.getElementById("total").value = "";
+    document.getElementById("usable").value = "";
+
+    loadAnalysis();
+}
+
+async function loadAnalysis() {
+    const response = await fetch("/api/analysis");
+    const data = await response.json();
+
+    document.getElementById("analysis").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+loadAnalysis();
+</script>
+
+</body>
+</html>
